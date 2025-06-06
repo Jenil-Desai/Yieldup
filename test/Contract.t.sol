@@ -3,33 +3,38 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
+import "src/Logicv1.sol";
 import "src/Contract.sol";
 
 contract TestContract is Test {
-    Yieldup y;
+    Logicv1 logicv1;
+    Yieldup proxy;
+
+    address user = address(0x123);
 
     function setUp() public {
-        y = new Yieldup();
+        logicv1 = new Logicv1();
+        proxy = new Yieldup(address(logicv1));
+
+        vm.deal(user, 100 ether);
     }
 
     function testStack() public {
-        address user = address(0x123);
-        vm.deal(user, 100 ether);
         vm.startPrank(user);
+        Logicv1 logic = Logicv1(address(proxy));
 
-        y.stack{value: 10 ether}();
-        assertEq(y.balances(user), 10 ether, "Balance should be 10 ether after stacking");
+        logic.stack{value: 10 ether}();
+        assertEq(logic.getBalance(), 10 ether, "Balance should be 10 ether after stacking");
     }
 
     function testUnstack() public {
-        address user = address(0x123);
-        vm.deal(user, 100 ether);
         vm.startPrank(user);
+        Logicv1 logic = Logicv1(address(proxy));
 
-        y.stack{value: 10 ether}();
-        assertEq(y.balances(user), 10 ether, "Balance should be 10 ether after stacking");
+        logic.stack{value: 10 ether}();
+        assertEq(logic.getBalance(), 10 ether, "Balance should be 10 ether after stacking");
 
-        y.unstack();
-        assertEq(y.balances(user), 0, "Balance should be 0 after unstacking");
+        logic.unstack(5 ether);
+        assertEq(logic.getBalance(), 5 ether, "Balance should be 0 after unstacking");
     }
 }
