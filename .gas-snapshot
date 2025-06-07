@@ -1,1 +1,2 @@
-TestContract:testBar() (gas: 401)
+TestContract:testStack() (gas: 68278)
+TestContract:testUnstack() (gas: 79364)
