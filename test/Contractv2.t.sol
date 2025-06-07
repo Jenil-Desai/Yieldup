@@ -3,25 +3,30 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import "src/Logicv1.sol";
+import "src/Logicv2.sol";
+import "src/YieldupToken.sol";
 import "src/Contract.sol";
 
+import "lib/IYT.sol";
+
 contract TestContract is Test {
-    Logicv1 logicv1;
+    YieldupToken yieldupToken;
+    Logicv2 logicv2;
     Yieldup proxy;
 
     address user = address(0x123);
 
     function setUp() public {
-        logicv1 = new Logicv1();
-        proxy = new Yieldup(address(logicv1));
+        yieldupToken = new YieldupToken();
+        logicv2 = new Logicv2();
+        proxy = new Yieldup(address(logicv2), IYieldupToken(address(yieldupToken)));
 
         vm.deal(user, 100 ether);
     }
 
     function testStack() public {
         vm.startPrank(user);
-        Logicv1 logic = Logicv1(address(proxy));
+        Logicv2 logic = Logicv2(address(proxy));
 
         logic.stack{value: 10 ether}();
         assertEq(logic.getBalance(), 10 ether, "Balance should be 10 ether after stacking");
@@ -29,7 +34,7 @@ contract TestContract is Test {
 
     function testUnstack() public {
         vm.startPrank(user);
-        Logicv1 logic = Logicv1(address(proxy));
+        Logicv2 logic = Logicv2(address(proxy));
 
         logic.stack{value: 10 ether}();
         assertEq(logic.getBalance(), 10 ether, "Balance should be 10 ether after stacking");

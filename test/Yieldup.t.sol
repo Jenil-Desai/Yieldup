@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import "src/Yieldup.sol";
+import "src/YieldupToken.sol";
 
 contract TestYieldupToken is Test {
     YieldupToken yieldupToken;

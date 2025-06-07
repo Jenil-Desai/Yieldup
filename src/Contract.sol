@@ -1,12 +1,24 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.13;
 
+import "lib/IYT.sol";
+
 contract Yieldup {
-    mapping(address => uint256) private balances;
+    struct UserInfo {
+        uint256 stakedAmount;
+        uint256 rewardDebt;
+        uint256 lastUpdate;
+    }
+
+    uint8 public constant REWARD_PER_SEC_PER_ETH = 1;
+
+    mapping(address => UserInfo) private userInfo;
+    IYieldupToken private yieldupToken;
     uint256 private totalStaked;
     address private implementation;
 
-    constructor(address _implementation) {
+    constructor(address _implementation, IYieldupToken _yieldupToken) {
+        yieldupToken = _yieldupToken;
         implementation = _implementation;
     }
 
