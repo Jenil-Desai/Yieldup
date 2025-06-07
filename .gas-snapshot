@@ -1,2 +1,4 @@
 TestContract:testStack() (gas: 68278)
 TestContract:testUnstack() (gas: 79364)
+TestYieldupToken:testInitialSupply() (gas: 7995)
+TestYieldupToken:testMint() (gas: 58199)
